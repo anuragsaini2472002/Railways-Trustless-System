@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PHARMA TEST</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            <input type="text" id="_fare" placeholder="Fare">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="_ticketID" placeholder="Ticket ID">
+        </div>
+        <div class="form-group col-md-2">
+            <button id="submit" onclick="store()">Submit Data</button><br>
+        </div>
+
+        <b><div id="viewstore" ></div></b>
+        <br><br>
+    </div>
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            <input type="text" id="_ltime" placeholder="ltime">
+        </div>
+
+        <div class="form-group col-md-2">
+            <input type="text" id="_ticketID1" placeholder="ticketID1">
+        </div>
+        <div class="form-group col-md-2">
+            <button id="submit" onclick="stored()">Submit Data</button><br>
+        </div>
+
+        <b><div id="viewlate" ></div></b>
+        <br><br>
+    </div>
+    <div class="form-row">
+
+        <div class="form-group col-md-2">
+            <input type="text" id="_ticketID" placeholder="TicketID">
+        </div>
+
+       
+        <div class="form-group col-md-2">
+            <button id="submit" onclick="retrive()">Submit Data</button><br>
+        </div>
+
+        <b><div id="viewdata" ></div></b>
+        <br><br>
+    </div>
+    <script type="text/javascript" src="./abi.js"></script>
+    <script type="text/javascript">
+        var Rail;
+        $(document).ready(function() {
+
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+            web3.eth.defaultAccount = '0x149FcE626AA631eF3502a59F4B4542fAef7B8719';
+            const address = '0x6e925e3170E2E43C621253B4e4A246378417ED46';
+            Rail = new web3.eth.Contract(abi, address);
+        });
+        async function store(){
+        var p1 = document.getElementById('_fare').value;
+        var p2 = document.getElementById('_ticketID').value;
+        
+		  const result = await Rail.methods.store(p1, p2).send({from:web3.eth.defaultAccount, gas:1000000})
+        .then(function (result) {
+          $("#viewstore").html('New data stored - ' );
+          console.log(result);
+        });
+    }
+        async function stored(){
+        var p1 = document.getElementById('_ltime').value;
+        var p2 = document.getElementById('_ticketID1').value;
+        
+		  const result = await Rail.methods.ltime(p1, p2).send({from:web3.eth.defaultAccount, gas:1000000})
+        .then(function (result) {
+          $("#viewlate").html('New data stored - ' );
+          console.log(result);
+        });
+    }
+    
+    async function retrive(){
+        var p1 = document.getElementById('_ticketID').value;
+       
+        
+		  const result = await Rail.methods.retrieve(p1).call({from:web3.eth.defaultAccount, gas:1000000})
+        .then(function (result) {
+          $("#viewdata").html('Refund amount = ' + JSON.stringify(result));
+          console.log(result);
+        });
+    }
+    </script>
+</body>
+
+</html>
